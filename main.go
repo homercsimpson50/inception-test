@@ -27,8 +27,17 @@ func itemsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(items)
 }
 
+func versionHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"version":  "1.0.0",
+		"built_by": "containerized-gt",
+	})
+}
+
 func main() {
 	http.HandleFunc("/health", healthHandler)
 	http.HandleFunc("/items", itemsHandler)
+	http.HandleFunc("/version", versionHandler)
 	http.ListenAndServe(":8080", nil)
 }

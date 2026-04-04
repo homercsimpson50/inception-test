@@ -25,6 +25,27 @@ func TestHealthHandler(t *testing.T) {
 	}
 }
 
+func TestVersionHandler(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "/version", nil)
+	w := httptest.NewRecorder()
+	versionHandler(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected status 200, got %d", w.Code)
+	}
+
+	var result map[string]string
+	if err := json.NewDecoder(w.Body).Decode(&result); err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+	if result["version"] != "1.0.0" {
+		t.Errorf("expected version 1.0.0, got %q", result["version"])
+	}
+	if result["built_by"] != "containerized-gt" {
+		t.Errorf("expected built_by containerized-gt, got %q", result["built_by"])
+	}
+}
+
 func TestItemsHandler(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/items", nil)
 	w := httptest.NewRecorder()
